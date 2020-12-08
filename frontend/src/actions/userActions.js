@@ -8,6 +8,7 @@ import {
   USER_LOGOUT,
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
 } from "../constants/userConstants";
 import Axios from "axios";
 
@@ -89,23 +90,21 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
     dispatch({
       type: USER_DETAILS_REQUEST,
     });
-    const {userLogin:{userInfo}} = getState();
+    const {
+      userLogin: { userInfo },
+    } = getState();
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization:`Bearer ${userInfo.token}`
+        Authorization: `Bearer ${userInfo.token}`,
       },
-     
     };
-    const { data } = await Axios.post(
-      `/api/users/${id}`,
-      config
-    );
+    const { data } = await Axios.get(`/api/users/${id}`, config);
+    console.log(data);
     dispatch({
       type: USER_DETAILS_SUCCESS,
       payload: data,
     });
-   
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAIL,

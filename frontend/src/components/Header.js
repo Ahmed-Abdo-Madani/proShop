@@ -33,12 +33,27 @@ function Header() {
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>
+
               ) : (
                 <LinkContainer to="/login">
                   <Nav.Link>
                     <i className="fas fa-user" /> Sign In
                   </Nav.Link>
                 </LinkContainer>
+              )}
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title='Admin'>
+                <LinkContainer to="/admin/userlist">
+                  <NavDropdown.Item>users</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to="/admin/productslist">
+                  <NavDropdown.Item>Products</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to="/admin/orderslist">
+                  <NavDropdown.Item>Orders</NavDropdown.Item>
+                </LinkContainer>
+                
+              </NavDropdown>
               )}
             </Nav>
           </Navbar.Collapse>

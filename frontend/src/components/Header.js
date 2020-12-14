@@ -3,6 +3,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/userActions";
+
 function Header() {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userLogin);
@@ -33,7 +34,6 @@ function Header() {
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>
-
               ) : (
                 <LinkContainer to="/login">
                   <Nav.Link>
@@ -42,18 +42,17 @@ function Header() {
                 </LinkContainer>
               )}
               {userInfo && userInfo.isAdmin && (
-                <NavDropdown title='Admin'>
-                <LinkContainer to="/admin/userlist">
-                  <NavDropdown.Item>users</NavDropdown.Item>
-                </LinkContainer>
-                <LinkContainer to="/admin/productslist">
-                  <NavDropdown.Item>Products</NavDropdown.Item>
-                </LinkContainer>
-                <LinkContainer to="/admin/orderslist">
-                  <NavDropdown.Item>Orders</NavDropdown.Item>
-                </LinkContainer>
-                
-              </NavDropdown>
+                <NavDropdown title="Admin">
+                  <LinkContainer to="/admin/userlist">
+                    <NavDropdown.Item>users</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/admin/productslist">
+                    <NavDropdown.Item>Products</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/admin/orderslist">
+                    <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
               )}
             </Nav>
           </Navbar.Collapse>

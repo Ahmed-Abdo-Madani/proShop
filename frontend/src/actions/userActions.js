@@ -20,6 +20,9 @@ import {
   USER_DELETE_SUCCESS,
   USER_DELETE_REQUEST,
   USER_DELETE_FAIL,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAIL,
 } from "../constants/userConstants";
 import Axios from "axios";
 import { LOGGED_USER_ORDERS_RESET } from "../constants/orderConstants";
@@ -186,6 +189,38 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
     });
   }
 };
+export const updateUser = (user) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await Axios.put(`/api/users/${user._id}`, user, config);
+    dispatch({
+      type: USER_UPDATE_SUCCESS,
+    });
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 
 export const deleteUser = (userId) => async (dispatch, getState) => {
   try {
@@ -200,10 +235,9 @@ export const deleteUser = (userId) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await Axios.delete(`/api/users/${userId}`, config);
+    await Axios.delete(`/api/users/${userId}`, config);
     dispatch({
       type: USER_DELETE_SUCCESS,
-      payload: data,
     });
   } catch (error) {
     dispatch({

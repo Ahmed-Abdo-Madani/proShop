@@ -14,8 +14,8 @@ const UserListScreen = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const userDelete = useSelector((state) => state.userDelete);
-  const { success } = userDelete;
+  const productDelete = useSelector((state) => state.productDelete);
+  const {loading:loadingDelete,error:errorDelete, success:successDelete } = productDelete;
 
   const deleteHandler = (productId) => {
     if (window.confirm("are you sure ?")) {
@@ -32,7 +32,7 @@ const UserListScreen = ({ history }) => {
     } else {
       history.push("/login");
     }
-  }, [dispatch, history, userInfo, success]);
+  }, [dispatch, history, userInfo, successDelete]);
   return (
     <>
       <Row className="align-items-center">
@@ -45,7 +45,8 @@ const UserListScreen = ({ history }) => {
           </Button>
         </Col>
       </Row>
-
+      {loadingDelete && <Loader />}
+      {errorDelete && <Message variant="danger">{errorDelete} </Message>}
       {loading ? (
         <Loader />
       ) : error ? (

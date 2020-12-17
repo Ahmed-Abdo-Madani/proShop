@@ -86,8 +86,9 @@ export const createProduct = () => async (dispatch,getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    await axios.post(`/api/products`,config);
-    dispatch({ type: PRODUCT_CREATE_SUCCESS });
+    const {data}=await axios.post(`/api/products`,{}, config);
+    dispatch({ type: PRODUCT_CREATE_SUCCESS,
+    payload:data });
   } catch (error) {
     dispatch({
       type: PRODUCT_CREATE_FAIL,

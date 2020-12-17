@@ -5,19 +5,26 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { getUserDetails, updateUser } from "../actions/userActions";
+import { listProductDetails } from "../actions/productActions";
 import { USER_UPDATE_RESET } from "../constants/userConstants";
 import FromContainer from "../components/FromContainer";
 
-const UserEditScreen = ({ match, history }) => {
-  const userId = match.params.id;
+const ProductEditScreen = ({ match, history }) => {
+  const productId = match.params.id;
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [isAdmin, setIsAdmin] = useState("");
+  const [price, setPrice] = useState(0);
+  const [image, setImage] = useState("");
+  const [category, setCategory] = useState("");
+  const [brand, setBrand] = useState("");
+  const [dscription, setDescription] = useState("");
+  const [countInStock, setCountInStock] = useState(0);
+  const [rating, setRatin] = useState(0);
+  const [numReviews, setNumReviews] = useState(0);
 
   const dispatch = useDispatch();
 
-  const userDetails = useSelector((state) => state.userDetails);
-  const { loading, error, user } = userDetails;
+  const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
 
   const userUpdate = useSelector((state) => state.userUpdate);
   const {
@@ -27,23 +34,30 @@ const UserEditScreen = ({ match, history }) => {
   } = userUpdate;
 
   useEffect(() => {
+    dispatch(listProductDetails(match.params.id));
     if (successUpdate) {
       dispatch({ type: USER_UPDATE_RESET });
       history.push("/admin/userlist");
     } else {
-      if (!user.name || user._id !== userId) {
-        dispatch(getUserDetails(userId));
+      if (!product.name || product._id !== productId) {
+        dispatch(listProductDetails(productId));
       } else {
-        setName(user.name);
-        setEmail(user.email);
-        setIsAdmin(user.isAdmin);
+        setName(product.name);
+        setPrice(product.price);
+        setImage(product.image);
+        setCategory(product.category);
+        setBrand(product.brand);
+        setDescription(product.dscription);
+        setCountInStock(product.countInStock);
+        setRatin(product.rating);
+        setNumReviews(product.numReviews);
       }
     }
-  }, [dispatch, userId, user, successUpdate, history]);
+  }, [dispatch,match, productId, product, successUpdate, history]);
 
   const handelSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateUser({ _id: userId, name, email, isAdmin }));
+    
   };
   return (
     <>
@@ -66,23 +80,16 @@ const UserEditScreen = ({ match, history }) => {
               onChange={(e) => setName(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Form.Group controlId="email">
-            <Form.Label>Email Address</Form.Label>
+          <Form.Group controlId="price">
+            <Form.Label>Price</Form.Label>
             <Form.Control
-              type="email"
-              placeholder="enter email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="number"
+              placeholder="enter price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Form.Group controlId="isAdmin">
-            <Form.Check
-              type="checkbox"
-              label="is Admin"
-              checked={isAdmin}
-              onChange={(e) => setIsAdmin(e.target.checked)}
-            ></Form.Check>
-          </Form.Group>
+         
 
           <Button type="submit" variant="primary">
             Update
@@ -93,4 +100,4 @@ const UserEditScreen = ({ match, history }) => {
   );
 };
 
-export default UserEditScreen;
+export default ProductEditScreen;

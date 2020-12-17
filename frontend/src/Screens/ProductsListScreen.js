@@ -4,12 +4,17 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { listProducts, deleteProduct } from "../actions/productActions";
+import { listProducts, deleteProduct, createProduct } from "../actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 const UserListScreen = ({ history }) => {
   const dispatch = useDispatch();
+
   const productList = useSelector((state) => state.productList);
   const { loading, products, error } = productList;
+
+  const productCreate = useSelector((state) => state.productCreate);
+  const { loading:loadingCreate,success:successCreate, product:createdProduct, error:errorCreate } = productCreate;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -24,15 +29,19 @@ const UserListScreen = ({ history }) => {
   };
 
   const creatProductHandler = () => {
-    console.log("new Product");
+    dispatch(createProduct())
   };
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listProducts());
-    } else {
+    dispatch({type:PRODUCT_CREATE_RESET})
+    if (!userInfo.isAdmin) {
       history.push("/login");
-    }
-  }, [dispatch, history, userInfo, successDelete]);
+    } 
+    if(successCreate){
+       history.push(`/api/admin/products/${createdProduct._id}/edit`);
+     }else{
+      dispatch(listProducts());
+     }
+  }, [dispatch, history, userInfo, successDelete,successCreate,createdProduct]);
   return (
     <>
       <Row className="align-items-center">
@@ -45,6 +54,9 @@ const UserListScreen = ({ history }) => {
           </Button>
         </Col>
       </Row>
+      {loadingCreate && <Loader />}
+      {errorCreate && <Message variant="danger">{errorCreate} </Message>}
+
       {loadingDelete && <Loader />}
       {errorDelete && <Message variant="danger">{errorDelete} </Message>}
       {loading ? (

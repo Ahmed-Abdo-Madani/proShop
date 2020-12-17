@@ -4,7 +4,11 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { listProducts, deleteProduct, createProduct } from "../actions/productActions";
+import {
+  listProducts,
+  deleteProduct,
+  createProduct,
+} from "../actions/productActions";
 import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 const UserListScreen = ({ history }) => {
@@ -14,13 +18,22 @@ const UserListScreen = ({ history }) => {
   const { loading, products, error } = productList;
 
   const productCreate = useSelector((state) => state.productCreate);
-  const { loading:loadingCreate,success:successCreate, product:createdProduct, error:errorCreate } = productCreate;
+  const {
+    loading: loadingCreate,
+    success: successCreate,
+    product: createdProduct,
+    error: errorCreate,
+  } = productCreate;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const productDelete = useSelector((state) => state.productDelete);
-  const {loading:loadingDelete,error:errorDelete, success:successDelete } = productDelete;
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = productDelete;
 
   const deleteHandler = (productId) => {
     if (window.confirm("are you sure ?")) {
@@ -29,19 +42,26 @@ const UserListScreen = ({ history }) => {
   };
 
   const creatProductHandler = () => {
-    dispatch(createProduct())
+    dispatch(createProduct());
   };
   useEffect(() => {
-    dispatch({type:PRODUCT_CREATE_RESET})
+    dispatch({ type: PRODUCT_CREATE_RESET });
     if (!userInfo.isAdmin) {
       history.push("/login");
-    } 
-    if(successCreate){
-       history.push(`/api/admin/products/${createdProduct._id}/edit`);
-     }else{
+    }
+    if (successCreate) {
+      history.push(`/admin/products/${createdProduct._id}/edit`);
+    } else {
       dispatch(listProducts());
-     }
-  }, [dispatch, history, userInfo, successDelete,successCreate,createdProduct]);
+    }
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    successDelete,
+    successCreate,
+    createdProduct,
+  ]);
   return (
     <>
       <Row className="align-items-center">
@@ -92,7 +112,7 @@ const UserListScreen = ({ history }) => {
                 </td>
                 <td>{product.rating}</td>
                 <td>
-                  <LinkContainer to={`/admin/product/${product._id}/edit`}>
+                  <LinkContainer to={`/admin/products/${product._id}/edit`}>
                     <Button variant="light" className="btn-sm">
                       <i className="fas fa-edit" />
                     </Button>

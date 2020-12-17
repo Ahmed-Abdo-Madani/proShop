@@ -37,7 +37,11 @@ function App() {
             path="/admin/productslist"
             component={ProductsListScreen}
           />
-          <Route exact path="/admin/products/:id/edit" component={ProductEditScreen} />
+          <Route
+            exact
+            path="/admin/products/:id/edit"
+            component={ProductEditScreen}
+          />
           <Route exact path="/admin/user/:id/edit" component={UserEditScreen} />
           <Route exact path="/admin/userlist" component={UserListScreen} />
           <Route exact path="/" component={HomeScreen} />

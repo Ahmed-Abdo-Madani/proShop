@@ -7,7 +7,7 @@ import Loader from "../components/Loader";
 import { listProductDetails } from "../actions/productActions";
 import FromContainer from "../components/FromContainer";
 
-const ProductEditScreen = ({ match }) => {
+const ProductEditScreen = ({ match,history }) => {
   const productId = match.params.id;
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
@@ -15,32 +15,27 @@ const ProductEditScreen = ({ match }) => {
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [description, setDescription] = useState("");
-  const [countInStock, setCountInStock] = useState(0);
-  const [rating, setRating] = useState(0);
-  const [numReviews, setNumReviews] = useState(0);
+  const [countInStock, setCountInStock] = useState("");
+
 
   const dispatch = useDispatch();
 
-  const productDetails = useSelector((state) => state.productDetails);
+ const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
-
   useEffect(() => {
-    if (!product.name || product._id !== productId) {
-      dispatch(listProductDetails(productId));
-      console.log(product, productId);
-    } else {
-      setPrice(product.price);
-      setName(product.name);
-      setImage(product.image);
-      setCategory(product.category);
-      setBrand(product.brand);
-      setDescription(product.dscription);
-      setCountInStock(product.countInStock);
-      setRating(product.rating);
-      setNumReviews(product.numReviews);
+    
+      if (!product.name || product._id !== productId) {
+        dispatch(listProductDetails(productId));
+      } else {
+        setName(product.name);
+        setPrice(product.price);
+        setImage(product.image);
+        setBrand(product.brand);
+        setCategory(product.category);
+        setCountInStock(product.countInSock);
+        setDescription(product.description);
     }
-  }, [dispatch, productId, product]);
-
+  }, [dispatch, history, productId,product._id, product.name,product.price,product.image,product.brand,product.category,product.countInSock,product.description]);
   const handelSubmit = (e) => {
     e.preventDefault();
   };
@@ -105,40 +100,10 @@ const ProductEditScreen = ({ match }) => {
             ></Form.Control>
           </Form.Group>
 
-          <Form.Group controlId="rating">
-            <Form.Label>rating</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="enter rating"
-              value={rating}
-              onChange={(e) => setRating(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
-          <Form.Group controlId="numReviews">
-            <Form.Label>numReviews</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="enter numReviews"
-              value={numReviews}
-              onChange={(e) => setNumReviews(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
-          <Form.Group controlId="countInStock">
-            <Form.Label>countInStock</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="enter countInStock"
-              value={countInStock}
-              onChange={(e) => setCountInStock(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
           <Form.Group controlId="description">
             <Form.Label>description</Form.Label>
             <Form.Control
-              type="number"
+              type="text"
               placeholder="enter description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}

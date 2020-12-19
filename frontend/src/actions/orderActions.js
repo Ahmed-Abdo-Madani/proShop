@@ -11,6 +11,9 @@ import {
   LOGGED_USER_ORDERS_REQUEST,
   LOGGED_USER_ORDERS_SUCCESS,
   LOGGED_USER_ORDERS_FAIL,
+  ADMIN_ORDERS_LIST_REQUEST,
+  ADMIN_ORDERS_LIST_SUCCESS,
+  ADMIN_ORDERS_LIST_FAIL,
 } from "../constants/orderConstants";
 import axios from "axios";
 
@@ -110,7 +113,7 @@ export const payOrder = (orderId, paymentResult) => async (
   }
 };
 
-export const getUserOrdersList = () => async (dispatch,getState) => {
+export const getUserOrdersList = () => async (dispatch, getState) => {
   try {
     dispatch({
       type: LOGGED_USER_ORDERS_REQUEST,
@@ -123,7 +126,7 @@ export const getUserOrdersList = () => async (dispatch,getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await axios.get(`/api/orders/myorders`, config );
+    const { data } = await axios.get(`/api/orders/myorders`, config);
     dispatch({
       type: LOGGED_USER_ORDERS_SUCCESS,
       payload: data,
@@ -131,6 +134,35 @@ export const getUserOrdersList = () => async (dispatch,getState) => {
   } catch (error) {
     dispatch({
       type: LOGGED_USER_ORDERS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getAdminOrdersList = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ADMIN_ORDERS_LIST_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get(`/api/orders`, config);
+    dispatch({
+      type: ADMIN_ORDERS_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ADMIN_ORDERS_LIST_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

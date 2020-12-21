@@ -39,6 +39,11 @@ function App() {
             path="/admin/productslist"
             component={ProductsListScreen}
           />
+          <Route
+            exact
+            path="/admin/productslist/:pageNumber"
+            component={ProductsListScreen}
+          />
           <Route exact path="/admin/orderslist" component={OrdersListScreen} />
           <Route
             exact
@@ -47,7 +52,9 @@ function App() {
           />
           <Route exact path="/admin/user/:id/edit" component={UserEditScreen} />
           <Route exact path="/admin/userlist" component={UserListScreen} />
-          <Route path="/search/:keyword" component={HomeScreen} />
+          <Route exact path="/search/:keyword" component={HomeScreen} />
+          <Route exact path="/page/:pageNumber" component={HomeScreen} />
+          <Route exact path="/search/:keyword/page/:pageNumber" component={HomeScreen} />
           <Route exact path="/" component={HomeScreen} />
         </Container>
       </main>

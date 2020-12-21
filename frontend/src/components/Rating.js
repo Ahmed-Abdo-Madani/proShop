@@ -69,11 +69,11 @@ function Rating({ value, text, color }) {
   );
 }
 
-Rating.propTypes = {
+/* Rating.propTypes = {
   //value: PropTypes.number.isRequired,
   text: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
-};
+}; */
 Rating.defaultProps = {
   color: "#f8e825",
 };

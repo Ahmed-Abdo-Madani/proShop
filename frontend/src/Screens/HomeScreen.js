@@ -6,15 +6,16 @@ import Message from "../components/Message";
 import { Col, Row, Container } from "react-bootstrap";
 import { listProducts } from "../actions/productActions";
 
-function HomeScreen() {
+function HomeScreen({ match }) {
+  const keyword = match.params.keyword;
   const dispatch = useDispatch();
   const { loading, error, products } = useSelector(
     (state) => state.productList
   );
 
   useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+    dispatch(listProducts(keyword));
+  }, [dispatch, keyword]);
   return (
     <Container>
       <h1>Latest Products</h1>

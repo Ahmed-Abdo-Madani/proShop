@@ -6,7 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { Link } from "react-router-dom";
-import { getOrderDetails, payOrder,deliverOrder } from "../actions/orderActions";
+import {
+  getOrderDetails,
+  payOrder,
+  deliverOrder,
+} from "../actions/orderActions";
 import { ORDER_PAY_RESET } from "../constants/orderConstants";
 import { ORDER_DELIVER_RESET } from "../constants/orderConstants";
 
@@ -15,6 +19,7 @@ const OrderScreen = ({ match }) => {
   const dispatch = useDispatch();
 
   const [sdkReady, setSdkReady] = useState(false);
+  const [myFatoora, setMyFatoora] = useState(false);
 
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
@@ -50,6 +55,7 @@ const OrderScreen = ({ match }) => {
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult));
   };
+  const myFatoorahHandler = () => {};
 
   const successDeliverHandler = () => {
     dispatch(deliverOrder(order));
@@ -73,10 +79,19 @@ const OrderScreen = ({ match }) => {
       dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
-      if (!window.paypal) {
-        addPaypalScript();
-      } else {
-        setSdkReady(true);
+      switch (order.paymentMethod) {
+        case "paypal":
+          if (!window.paypal) {
+            addPaypalScript();
+          } else {
+            setSdkReady(true);
+          }
+          break;
+        case "myFatoora":
+          setMyFatoora(true);
+          break;
+        default: {
+        }
       }
     }
   }, [dispatch, order, orderId, successPay, successDeliver]);
@@ -189,28 +204,46 @@ const OrderScreen = ({ match }) => {
                   <Col> ${order.totalPrice} </Col>
                 </Row>
               </ListGroup.Item>
-                    {userInfo && !userInfo.isAdmin && !order.isPaid && (
-                      <ListGroup.Item>
-                {loadingPay && <Loader />}
-                {!sdkReady ? (
-                  <Loader />
+              {userInfo && !userInfo.isAdmin && !order.isPaid && !myFatoora && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+                  {!sdkReady ? (
+                    <Loader />
                   ) : (
                     <PayPalButton
-                    amount={order.totalPrice}
-                    onSuccess={successPaymentHandler}
+                      amount={order.totalPrice}
+                      onSuccess={successPaymentHandler}
                     />
-                )}
-              </ListGroup.Item> 
-                    )}
-
-               {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-              <ListGroup.Item>
-                <Button type='button' 
-                className="btn btn-block" 
-                onClick={successDeliverHandler}>
-                  {loadingDeliver ? <Loader /> : <>Mark as Delivered</> }
+                  )}
+                </ListGroup.Item>
+              )}
+              {myFatoora && (
+                <ListGroup.Item>
+                  <Button
+                    className="btn btn-block"
+                    variant="success"
+                    type="button"
+                    onClick={myFatoorahHandler}
+                  >
+                    Pay Now
                   </Button>
-                   </ListGroup.Item>)}
+                </ListGroup.Item>
+              )}
+
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type="button"
+                      className="btn btn-block"
+                      onClick={successDeliverHandler}
+                    >
+                      {loadingDeliver ? <Loader /> : <>Mark as Delivered</>}
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>

@@ -8,8 +8,10 @@ import { createOrder } from "../actions/orderActions";
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+
   const orderCreate = useSelector((state) => state.orderCreate);
   const { order, success, error } = orderCreate;
+
   const placeOrderHandler = () => {
     dispatch(
       createOrder({

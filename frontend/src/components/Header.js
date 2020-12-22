@@ -6,11 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/userActions";
 import SearchBox from "./SearchBox";
 
-function Header() {
+function Header({history}) {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userLogin);
   const logoutHandler = () => {
     dispatch(logout());
+    window.location.replace('/')
   };
   return (
     <>

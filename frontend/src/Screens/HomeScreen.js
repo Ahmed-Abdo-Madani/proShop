@@ -7,6 +7,8 @@ import Message from "../components/Message";
 import { Col, Row } from "react-bootstrap";
 import { listProducts } from "../actions/productActions";
 import ProductCarousel from "../components/ProductCarousel";
+import Meta from "../components/Meta";
+import { Link } from "react-router-dom";
 
 function HomeScreen({ match }) {
   const keyword = match.params.keyword;
@@ -21,7 +23,8 @@ function HomeScreen({ match }) {
   }, [dispatch, keyword, pageNumber]);
   return (
     <>
-      {!keyword && <ProductCarousel />}
+    <Meta />
+      {!keyword ? <ProductCarousel /> : <Link to='/' className="btn btn-dark">Go Back</Link>}
       <h1>Latest Products</h1>
       {loading ? (
         <Loader />

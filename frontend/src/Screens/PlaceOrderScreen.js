@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { Link } from "react-router-dom";
-import { createOrder } from "../actions/orderActions";
+import { createOrder, sendPayment } from "../actions/orderActions";
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
@@ -12,26 +12,70 @@ const PlaceOrderScreen = ({ history }) => {
   const orderCreate = useSelector((state) => state.orderCreate);
   const { order, success, error } = orderCreate;
 
+  const orderSendPayment = useSelector((state) => state.orderSendPayment);
+  const { loading, error:errorPayment,success:successPayment, paymentDetails } = orderSendPayment;
+
   const placeOrderHandler = () => {
     dispatch(
       createOrder({
         orderItems: cart.cartItems,
         itemsPrice: cart.itemsPrice,
-        paymentMethod: cart.paymentMethod,
+        paymentMethod: cart.paymentMethod || 'myfatoora',
         shippingAddress: cart.shippingAddress,
         shippingPrice: cart.shippingPrice,
         taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
       })
+
     );
+
+    dispatch(sendPayment({
+      "CustomerName": "Ahmed",
+      "NotificationOption": "sms",
+      "MobileCountryCode": "+966",
+      "CustomerMobile": "545983410",
+      "CustomerEmail": "doni.des.ni@gmail.com",
+      "InvoiceValue": 1000,
+      "DisplayCurrencyIso": "SAR",
+      "CallBackUrl": "https://givtapp.herokuapp.com/",
+      "ErrorUrl": "https://givtapp.herokuapp.com/",
+      "Language": "EN",
+      "CustomerReference": "Mr",
+      "CustomerCivilId": "0123456789",
+      "UserDefinedField": "string",
+      "CustomerAddress": {
+        "Block": "13",
+        "Street": "Harun Al Rasheed",
+        "HouseBuildingNo": "4339",
+        "Address": "4267-4297 Harun Al Rasheed, Al Aziziyah",
+        "AddressInstructions": "after othaim supermarket"
+      },
+      "ExpiryDate": "2020-12-23T07:54:37.072Z",
+      "SupplierCode": 0,
+      "SupplierValue": 0,
+      "InvoiceItems": [
+        {
+          "ItemName": "iphone12",
+          "Quantity": 1,
+          "UnitPrice": 1000,
+          "Weight": 1.2,
+          "Width": 7,
+          "Height": 14,
+          "Depth": 1
+        }
+      ]
+     
+    }))
   };
 
+
   useEffect(() => {
-    if (success) {
+    if (success && successPayment) {
       history.push(`/orders/${order._id}`);
+      
     }
     // eslint-disable-next-line
-  }, [success, history]);
+  }, [success, successPayment,history]);
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2);
   };
@@ -62,12 +106,12 @@ const PlaceOrderScreen = ({ history }) => {
                 {cart.shippingAddress.postalCode},{cart.shippingAddress.country}
               </p>
             </ListGroup.Item>
-            <ListGroup.Item>
+            {/* <ListGroup.Item>
               <h2>Payment Method</h2>
               <p>
                 <strong>Method : </strong> {cart.paymentMethod}
               </p>
-            </ListGroup.Item>
+            </ListGroup.Item> */}
             <ListGroup.Item>
               <h2>Cart Items</h2>
               {cart.cartItems.length === 0 ? (

@@ -27,6 +27,9 @@ const OrderScreen = ({ match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const orderSendPayment = useSelector((state) => state.orderSendPayment);
+  const { paymentDetails } = orderSendPayment;
+
   const orderPay = useSelector((state) => state.orderPay);
   const {
     loading: loadingPay,
@@ -55,7 +58,9 @@ const OrderScreen = ({ match }) => {
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult));
   };
-  const myFatoorahHandler = () => {};
+  const myFatoorahHandler = () => {
+    window.open(paymentDetails.Data.InvoiceURL)
+  };
 
   const successDeliverHandler = () => {
     dispatch(deliverOrder(order));
@@ -79,7 +84,8 @@ const OrderScreen = ({ match }) => {
       dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
-      switch (order.paymentMethod) {
+      setMyFatoora(true);
+      /* switch (order.paymentMethod) {
         case "paypal":
           if (!window.paypal) {
             addPaypalScript();
@@ -92,7 +98,7 @@ const OrderScreen = ({ match }) => {
           break;
         default: {
         }
-      }
+      } */
     }
   }, [dispatch, order, orderId, successPay, successDeliver]);
 
@@ -204,7 +210,7 @@ const OrderScreen = ({ match }) => {
                   <Col> ${order.totalPrice} </Col>
                 </Row>
               </ListGroup.Item>
-              {userInfo && !userInfo.isAdmin && !order.isPaid && !myFatoora && (
+              {/* {userInfo && !userInfo.isAdmin && !order.isPaid && !myFatoora && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
                   {!sdkReady ? (
@@ -216,8 +222,8 @@ const OrderScreen = ({ match }) => {
                     />
                   )}
                 </ListGroup.Item>
-              )}
-              {myFatoora && (
+              )} */}
+              {myFatoora && userInfo && !userInfo.isAdmin && !order.isPaid && (
                 <ListGroup.Item>
                   <Button
                     className="btn btn-block"

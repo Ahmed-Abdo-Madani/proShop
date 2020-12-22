@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Col } from "react-bootstrap";
+import { Button, Col,Row,Image } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from '../components/Loader'
+import Message from '../components/Message'
 import { savePaymentMethod } from "../actions/cartActions";
 import { payOrderMethods } from "../actions/orderActions";
-import FromContainer from "../components/FromContainer";
 import CheckoutSteps from "../components/CheckoutSteps";
-import axios from "axios";
 
 const PaymentScreen = ({ history }) => {
   const cart = useSelector((state) => state.cart);
   const orderPayMethod = useSelector((state) => state.orderPayMethod);
-  const { loading, success, methods } = orderPayMethod;
+  const { loading,error, success, methods } = orderPayMethod;
   const { shippingAddress } = cart;
-
+  console.log(methods)
+  const [paymentMethod, setPaymentMethod] = useState("");
+  
   if (!shippingAddress) {
     history.push("/shipping");
   }
-  const [paymentMethod, setPaymentMethod] = useState("paypal");
-
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(
@@ -25,16 +25,36 @@ const PaymentScreen = ({ history }) => {
         InvoiceAmount: cart.totalPrice,
         CurrencyIso: "SAR",
       })
-    );
-  }, [dispatch, cart]);
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(savePaymentMethod(paymentMethod));
+      );
+      
+    }, [dispatch, cart]);
+    
+    const paymentMethodHandler = (method) => {
+      dispatch(savePaymentMethod(method.PaymentMethodEn));
     history.push("/placeorder");
   };
   return (
-    <FromContainer>
+    <>
+      <CheckoutSteps step1 step2 step3 />
+      <h1>Payment Method</h1>
+        <Row>
+          {loading ? <Loader /> : error ? <Message variant='danger'>{error} </Message>: methods && methods.map(m =>(
+            <Col key={m.PaymentMethodId} md={3}>
+              <Button type='button' variant='outline-info' onClick={()=>paymentMethodHandler(m)}>
+                <Image src={m.ImageUrl} alt={m.PaymentMethodEn} fluid/>
+              </Button>
+            </Col>
+          )) }
+        </Row>
+    </>
+  );
+};
+
+export default PaymentScreen;
+
+
+
+{/* <FromContainer>
       <CheckoutSteps step1 step2 step3 />
       <h1>Payment Method</h1>
       <Form onSubmit={submitHandler}>
@@ -65,8 +85,4 @@ const PaymentScreen = ({ history }) => {
           Continue
         </Button>
       </Form>
-    </FromContainer>
-  );
-};
-
-export default PaymentScreen;
+    </FromContainer> */}

@@ -29,6 +29,7 @@ import {
   adminOrdersListReducer,
   orderDeliverReducer,
   orderPayMethodReducer,
+  orderSendPaymentReducer
 } from "./reducers/orderReducers";
 const reducer = combineReducers({
   productList: productListReducer,
@@ -54,6 +55,7 @@ const reducer = combineReducers({
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
   orderPayMethod: orderPayMethodReducer,
+  orderSendPayment: orderSendPaymentReducer,
   orderPay: orderPayReducer,
   orderDeliver: orderDeliverReducer,
 });

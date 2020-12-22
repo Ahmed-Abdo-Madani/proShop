@@ -25,6 +25,10 @@ import {
   ORDER_PAY_METHOD_SUCCESS,
   ORDER_PAY_METHOD_FAIL,
   ORDER_PAY_METHOD_RESET,
+  ORDER_SEND_PAYMENT_REQUEST,
+  ORDER_SEND_PAYMENT_SUCCESS,
+  ORDER_SEND_PAYMENT_FAIL,
+  ORDER_SEND_PAYMENT_RESET,
 } from "../constants/orderConstants";
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -80,6 +84,23 @@ export const orderPayReducer = (state = {}, action) => {
   }
 };
 
+export const orderSendPaymentReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_SEND_PAYMENT_REQUEST:
+      return { loading: true };
+
+    case ORDER_SEND_PAYMENT_SUCCESS:
+      return { loading: false, success: true, paymentDetails: action.payload };
+
+    case ORDER_SEND_PAYMENT_FAIL:
+      return { loading: false, error: action.payload };
+
+    case ORDER_SEND_PAYMENT_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
 export const orderPayMethodReducer = (state = { methods: [] }, action) => {
   switch (action.type) {
     case ORDER_PAY_METHOD_REQUEST:

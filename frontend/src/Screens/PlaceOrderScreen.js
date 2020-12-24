@@ -5,6 +5,8 @@ import Message from "../components/Message";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { Link } from "react-router-dom";
 import { createOrder, sendPayment } from "../actions/orderActions";
+
+
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
@@ -50,7 +52,7 @@ const PlaceOrderScreen = ({ history }) => {
         "Address": "4267-4297 Harun Al Rasheed, Al Aziziyah",
         "AddressInstructions": "after othaim supermarket"
       },
-      "ExpiryDate": "2020-12-23T07:54:37.072Z",
+      "ExpiryDate": "2021-12-23T07:54:37.072Z",
       "SupplierCode": 0,
       "SupplierValue": 0,
       "InvoiceItems": [
